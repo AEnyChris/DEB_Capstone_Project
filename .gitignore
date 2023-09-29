@@ -1,0 +1,7 @@
+data/*
+_/
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+.terraform/
+project plan.txt
