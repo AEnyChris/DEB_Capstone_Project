@@ -4,6 +4,8 @@ from airflow.utils.dates import days_ago
 from airflow.providers.google.cloud.operators.dataproc import  DataprocCreateClusterOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocDeleteClusterOperator
+from airflow.contrib.operators.bigquery_operator import BigQueryOperator
+from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 
 default_args = {
     'depends_on_past': False   

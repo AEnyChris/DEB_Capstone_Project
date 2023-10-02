@@ -24,7 +24,7 @@ kubectl create namespace airflow
 echo "### installing airflow commence"
 helm repo add apache-airflow https://airflow.apache.org
 
-helm upgrade --install airflow -f airflow_values.yaml apache-airflow/airflow --namespace airflow
+helm upgrade --install airflow -f airflow-values.yaml apache-airflow/airflow --namespace airflow
 echo "### done"
 kubectl get pods -n airflow
 

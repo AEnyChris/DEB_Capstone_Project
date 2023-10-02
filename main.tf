@@ -19,7 +19,7 @@ module "gke" {
   source = "./modules/gke"
 
   project_id    = var.project_id
-  cluster_name  = "airflow-gke-data-bootcamp"
+  cluster_name  = "airflow-gke-data-deb-bootcamp"
   location      = var.location
   vpc_id        = module.vpc.vpc
   subnet_id     = module.vpc.private_subnets[0]
@@ -40,4 +40,12 @@ module "cloudsql" {
   database_name     = var.database_name
   db_username       = var.db_username
   db_password       = var.db_password
+}
+
+
+module "bigquery" {
+  source = "./modules/bigquery"
+
+  dataset_id = var.dataset_id
+  region = var.region
 }

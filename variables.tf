@@ -55,3 +55,7 @@ variable "db_password" {
   description = "Password credentials for root user"
   default     = "dbpassword"
 }
+
+variable "dataset_id" {
+  description = "dataset name"
+}

@@ -1,7 +1,6 @@
 data/*
 _/
-terraform.tfstate
-terraform.tfstate.backup
-.terraform.lock.hcl
-.terraform/
+terraform.tfstat*
+.terraform*
 project plan.txt
+loading_data/data/*
