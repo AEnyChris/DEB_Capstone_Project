@@ -30,3 +30,15 @@ output "bq_dataset_id" {
 output "bq_dataset_creation_time" {
   value = module.bigquery.creation_time
 }
+
+output "gcs_data_bucket_uri" {
+  value = module.cloud-storage.data_bucket_base_url
+}
+
+output "gcs_stage_bucket_uri" {
+  value = module.cloud-storage.stage_bucket_base_url
+}
+
+output "gcs_scripts_bucket_uri" {
+  value = module.cloud-storage.scripts_bucket_base_url
+}

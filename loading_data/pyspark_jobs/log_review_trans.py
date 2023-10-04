@@ -3,24 +3,31 @@ from pyspark.sql import functions as F
 from pyspark.sql.functions import lit
 from pyspark.sql.types import StringType
 import xml.etree.ElementTree as ET
+from pyspark.sql.types import StringType, StructType, StructField, IntegerType
 
 
-RAW_BUCKET = None
+FILE_URI = None
 STAGE_BUCKET = None
 
 # Initialize spark session
-spark = SparkSession.builder.app("log_review_transform").getOrCreate()
+spark = SparkSession.builder.appName("log_review_transform").getOrCreate()
+
+
+schema = StructType([StructField("id_review", IntegerType(), True),
+                     StructField("log", StringType(), True)])
 
 # Read data from csv into a pyspark dataframe
-df = spark.read.csv(RAW_BUCKET)
+df = spark.read.csv(FILE_URI, header=True, schema=schema)
 df_new = df
 
 
 # Extract the name of columns from the xml in review_log column of datafame
-xroot = ET.fromstring(df.collect()[0][1])
-list_of_cols = []
-for node in xroot[0]:
-    list_of_cols.append(node.tag)
+# xroot = ET.fromstring(df.collect()[0][1])
+# list_of_cols = []
+# for node in xroot[0]:
+#     list_of_cols.append(node.tag)
+
+cols = ["log_date", "device", "location", "os", "ipaddress", "phone_number"]
 
 
 # Define function to parse xml values and extract texts
@@ -35,13 +42,16 @@ spark.udf.register("xml_xfm_udf", xml_xfm, StringType())
 
 
 # Apply udf on dataframe to create new columns
-for col in list_of_cols:
-    df_new = df_new.withColumn(col, xml_xfm_udf(df["review_log"], lit(list_of_cols.index(col))))
-    df_new.show()
+for col in cols:
+    df_new = df_new.withColumn(col, xml_xfm_udf(df["log"], lit(cols.index(col))))
+
+output_df = df_new.drop("log")
+output_df = output_df.withColumnRenamed("id_review", "log_id")
 
 
 # Load dataframe into GCS staging area
-df_new.write.mode("overwrite").options(header="True", delimiter=",").csv(STAGE_BUCKET)
+output_df.toPandas().to_csv(f"{STAGE_BUCKET}/log_review_transformed.csv", index=False)
+# df_new.write.mode("overwrite").options(header="True", delimiter=",").csv(STAGE_BUCKET)
 
 
-# cols = ["logdate", "device", "location", "os", "ipaddress", "phonenumber"]
+# cols = ["log_date", "device", "location", "os", "ipaddress", "phone_number"]

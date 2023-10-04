@@ -1,0 +1,1 @@
+SELECT DISTINCT device FROM review_logs

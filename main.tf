@@ -49,3 +49,11 @@ module "bigquery" {
   dataset_id = var.dataset_id
   region = var.region
 }
+
+
+module "cloud-storage" {
+  source = "./modules/cloud-storage"
+
+  project_id = var.project_id
+  region = var.region  
+}

@@ -27,12 +27,14 @@ from datetime import timedelta
 
 
 
-CLUSTER_NAME = 'demo-airflow-cluster'
+CLUSTER_NAME = 'deb-capstone-cluster'
 REGION='us-east1'
 PROJECT_ID='sodium-mountain-396818'
-PYSPARK_URI='gs://dataproc-airflow-example/pyspark_job.py'
+LOG_PYSPARK_URI='gs://dataproc-airflow-example/pyspark_job.py'
+MOVIE_PYSPARK_URI='gs://dataproc-airflow-example/pyspark_job.py'
 
-BQ_DATATSET=''
+BQ_DATATSET='deb_capstone_dw'
+GCS_STAGE_BUCKET = ""
 
 
 CLUSTER_CONFIG = {
@@ -49,10 +51,16 @@ CLUSTER_CONFIG = {
 }
 
 
-PYSPARK_JOB = {
+LOG_PYSPARK_JOB = {
     "reference": {"project_id": PROJECT_ID},
     "placement": {"cluster_name": CLUSTER_NAME},
-    "pyspark_job": {"main_python_file_uri": PYSPARK_URI},
+    "pyspark_job": {"main_python_file_uri": LOG_PYSPARK_URI},
+}
+
+MOVIE_PYSPARK_JOB = {
+    "reference": {"project_id": PROJECT_ID},
+    "placement": {"cluster_name": CLUSTER_NAME},
+    "pyspark_job": {"main_python_file_uri": MOVIE_PYSPARK_URI},
 }
 
 
@@ -81,14 +89,14 @@ with DAG(
 
     transform_log_review_data = DataprocSubmitJobOperator(
         task_id="transform_log_review_data", 
-        job=PYSPARK_JOB, 
+        job=LOG_PYSPARK_JOB, 
         region=REGION, 
         project_id=PROJECT_ID
     )
 
     transform_movie_review_data = DataprocSubmitJobOperator(
         task_id="transform_movie_review_data", 
-        job=PYSPARK_JOB, 
+        job=MOVIE_PYSPARK_JOB, 
         region=REGION, 
         project_id=PROJECT_ID
     )
@@ -100,13 +108,22 @@ with DAG(
         region=REGION
     )
 
-    # LOADING:
+    # LOADING TO WAREHOUSE:
     load_user_purchase_to_bq = GoogleCloudStorageToBigQueryOperator(
         task_id="load_user_purchase_to_bq",
-        bucket="" ,
-        source_objects=[],
-        destination_project_dataset_table="",
-        schema_fields="",
+        bucket= GCS_STAGE_BUCKET,
+        source_objects=['user_purchase.csv'],
+        destination_project_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.",
+        schema_fields=[
+                        {'name': 'invoice_number', 'type': 'INT64', 'mode': 'NULLABLE'},
+                        {'name': 'stock_code', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'detail', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'quantity', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'invoice_date', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'unit_price', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'customer_id', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'country', 'type': 'STRING', 'mode': 'NULLABLE'}
+                        ],
         skip_leading_rows=1,
         create_disposition='CREATE_IF_NEEDED',
         write_disposition='WRITE_TRUNCATE'
@@ -114,10 +131,18 @@ with DAG(
 
     load_log_review_to_bq = GoogleCloudStorageToBigQueryOperator(
         task_id="load_log_review_to_bq",
-        bucket= "",
-        source_objects=[],
-        destination_project_dataset_table="",
-        schema_fields="",
+        bucket= GCS_STAGE_BUCKET,
+        source_objects=['log_reviews.csv'],
+        destination_project_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.review_logs",
+        schema_fields=[
+                        {'name': 'log_id', 'type': 'INT64', 'mode': 'NULLABLE'},
+                        {'name': 'log_date', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'device', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'location', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'os', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'ipaddress', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'phone_number', 'type': 'STRING', 'mode': 'NULLABLE'}
+                        ],
         skip_leading_rows=1,
         create_disposition='CREATE_IF_NEEDED',
         write_disposition='WRITE_TRUNCATE'
@@ -125,53 +150,82 @@ with DAG(
 
     load_movie_review_to_bq = GoogleCloudStorageToBigQueryOperator(
         task_id="load_movie_review_to_bq",
-        bucket= "",
-        source_objects=[],
-        destination_project_dataset_table="",
-        schema_fields="",
+        bucket= GCS_STAGE_BUCKET,
+        source_objects=['movie_review.csv'],
+        destination_project_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.classified_movie_review",
+        schema_fields=[
+                        {'name': 'customer_id', 'type': 'INT64', 'mode': 'NULLABLE'},
+                        {'name': 'is_positive', 'type': 'INT64', 'mode': 'NULLABLE'},
+                        {'name': 'review_id', 'type': 'INT64', 'mode': 'NULLABLE'},
+                        {'name': 'insert_date', 'type': 'TIMESTAMP', 'mode': 'NULLABLE'}
+                        ],
         skip_leading_rows=1,
         create_disposition='CREATE_IF_NEEDED',
         write_disposition='WRITE_TRUNCATE'
     )
 
     create_table_dim_date = BigQueryOperator(
-        sql="",
         task_id="create_table_dim_date",
+        sql = """
+               SELECT 
+                    ROW_NUMBER() OVER (ORDER BY log_date) AS id_dim_date,
+                    log_date,
+                    SUBSTR(log_date,7,4) AS year,
+                    SUBSTR(log_date,1,2 ) AS month,
+                    SUBSTR(log_date,4,2) AS day
+               FROM 
+                    (SELECT DISTINCT log_date FROM review_logs)
+            """,
         use_legacy_sql=False,
         allow_large_results=True,
         write_disposition='WRITE_TRUNCATE',
         create_disposition='CREATE_IF_NEEDED',
-        destination_dataset_table=""
+        destination_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.dim_date"
     )
 
     create_table_dim_devices = BigQueryOperator(
         task_id="create_table_dim_devices",
-        sql="",
+        sql="""SELECT
+                    ROW_NUMBER() OVER (ORDER BY device) AS id_dim_devices,
+                    device
+                FROM 
+                    (SELECT DISTINCT device FROM review_logs)
+            """,
         use_legacy_sql=False,
         allow_large_results=True,
         write_disposition='WRITE_TRUNCATE',
         create_disposition='CREATE_IF_NEEDED',
-        destination_dataset_table=""
+        destination_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.dim_devices"
     )
 
     create_table_dim_location = BigQueryOperator(
         task_id="create_table_dim_location",
-        sql="",
+        sql="""SELECT
+                    ROW_NUMBER() OVER (ORDER BY location) AS id_dim_location,
+                    location
+                FROM 
+                    (SELECT DISTINCT device FROM location)
+            """,
         use_legacy_sql=False,
         allow_large_results=True,
         write_disposition='WRITE_TRUNCATE',
         create_disposition='CREATE_IF_NEEDED',
-        destination_dataset_table=""
+        destination_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.dim_location"
     )
 
     create_table_dim_os = BigQueryOperator(
         task_id="create_table_dim_os",
-        sql="",
+        sql="""SELECT
+                    ROW_NUMBER() OVER (ORDER BY os) AS id_dim_os,
+                    os
+                FROM 
+                    (SELECT DISTINCT os FROM review_logs)
+            """,
         use_legacy_sql=False,
         allow_large_results=True,
         write_disposition='WRITE_TRUNCATE',
         create_disposition='CREATE_IF_NEEDED',
-        destination_dataset_table=""
+        destination_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.dim_os"
     )
 
     create_table_fact_movie_analytics = BigQueryOperator(
@@ -181,7 +235,7 @@ with DAG(
         allow_large_results=True,
         write_disposition='WRITE_TRUNCATE',
         create_disposition='CREATE_IF_NEEDED',
-        destination_dataset_table=""
+        destination_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.fact_movie_analytics"
     )
 
     end = DummyOperator(task_id='end')
