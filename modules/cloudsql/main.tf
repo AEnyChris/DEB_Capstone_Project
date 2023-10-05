@@ -27,6 +27,12 @@ resource "google_sql_database" "database" {
   instance = google_sql_database_instance.sql_instance.name
 }
 
+
+resource "google_sql_database" "project_database" {
+  name     = var.project_database_name
+  instance = google_sql_database_instance.sql_instance.name
+}
+
 resource "google_sql_user" "users" {
   name     = var.db_username
   instance = google_sql_database_instance.sql_instance.name

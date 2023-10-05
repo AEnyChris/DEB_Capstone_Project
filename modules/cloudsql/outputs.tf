@@ -13,3 +13,7 @@ output "database_connection" {
 output "database" {
   value = google_sql_database.database.id
 }
+
+output "project_database" {
+  value = google_sql_database.project_database.id
+}

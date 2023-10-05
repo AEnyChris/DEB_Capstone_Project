@@ -21,21 +21,21 @@ from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobO
 from airflow.providers.google.cloud.operators.dataproc import DataprocDeleteClusterOperator
 from airflow.contrib.operators.bigquery_operator import BigQueryOperator
 from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
+from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToGCSOperator
 
 # Python Modules:
 from datetime import timedelta
 
 
-
-CLUSTER_NAME = 'deb-capstone-cluster'
-REGION='us-east1'
 PROJECT_ID='sodium-mountain-396818'
-LOG_PYSPARK_URI='gs://dataproc-airflow-example/pyspark_job.py'
-MOVIE_PYSPARK_URI='gs://dataproc-airflow-example/pyspark_job.py'
+REGION='us-east1'
 
 BQ_DATATSET='deb_capstone_dw'
 GCS_STAGE_BUCKET = ""
 
+CLUSTER_NAME = 'deb-capstone-cluster'
+LOG_PYSPARK_URI='gs://dataproc-airflow-example/pyspark_job.py'
+MOVIE_PYSPARK_URI='gs://dataproc-airflow-example/pyspark_job.py'
 
 CLUSTER_CONFIG = {
     "master_config": {
@@ -49,7 +49,6 @@ CLUSTER_CONFIG = {
         "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 512},
     }
 }
-
 
 LOG_PYSPARK_JOB = {
     "reference": {"project_id": PROJECT_ID},
@@ -77,6 +76,15 @@ with DAG(
 ) as dag:
     
     start = DummyOperator(task_id='start')
+
+    import_user_purchase_to_gcs = PostgresToGCSOperator(
+        task_id="import_user_purchase_to_gcs",
+        sql="SELECT * FROM user_purchase",
+        bucket= GCS_STAGE_BUCKET,
+        filename="user_purchase.csv",
+        export_format='csv',
+        use_server_side_cursor=True
+    )
 
     # TRANSFORMATION:
     create_dataproc_cluster = DataprocCreateClusterOperator(
@@ -113,15 +121,15 @@ with DAG(
         task_id="load_user_purchase_to_bq",
         bucket= GCS_STAGE_BUCKET,
         source_objects=['user_purchase.csv'],
-        destination_project_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.",
+        destination_project_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.user_purchase",
         schema_fields=[
-                        {'name': 'invoice_number', 'type': 'INT64', 'mode': 'NULLABLE'},
+                        {'name': 'invoice_number', 'type': 'STRING', 'mode': 'NULLABLE'},
                         {'name': 'stock_code', 'type': 'STRING', 'mode': 'NULLABLE'},
                         {'name': 'detail', 'type': 'STRING', 'mode': 'NULLABLE'},
-                        {'name': 'quantity', 'type': 'STRING', 'mode': 'NULLABLE'},
-                        {'name': 'invoice_date', 'type': 'STRING', 'mode': 'NULLABLE'},
-                        {'name': 'unit_price', 'type': 'STRING', 'mode': 'NULLABLE'},
-                        {'name': 'customer_id', 'type': 'STRING', 'mode': 'NULLABLE'},
+                        {'name': 'quantity', 'type': 'INT64', 'mode': 'NULLABLE'},
+                        {'name': 'invoice_date', 'type': 'TIMESTAMP', 'mode': 'NULLABLE'},
+                        {'name': 'unit_price', 'type': 'NUMERIC', 'mode': 'NULLABLE'},
+                        {'name': 'customer_id', 'type': 'INT64', 'mode': 'NULLABLE'},
                         {'name': 'country', 'type': 'STRING', 'mode': 'NULLABLE'}
                         ],
         skip_leading_rows=1,

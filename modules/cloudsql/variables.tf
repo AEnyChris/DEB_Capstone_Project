@@ -27,6 +27,10 @@ variable "database_name" {
   description = "Name for the database to be created"
 }
 
+variable "project_database_name" {
+  description = "Name for the database to be created"
+}
+
 variable "db_username" {
   description = "Username credentials for root user"
 }

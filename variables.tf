@@ -17,7 +17,7 @@ variable "gke_num_nodes" {
 }
 
 variable "machine_type" {
-  type = string
+  type    = string
   default = "n1-standard-1"
 }
 
@@ -45,6 +45,11 @@ variable "disk_space" {
 variable "database_name" {
   description = "Name for the database to be created"
   default     = "dbname"
+}
+
+variable "project_database_name" {
+  description = "Name for the database to be created"
+  default     = "projectdbname"
 }
 
 variable "db_username" {

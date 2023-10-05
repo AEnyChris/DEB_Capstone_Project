@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     google = {
-      source = "hashicorp/google"
+      source  = "hashicorp/google"
       version = "3.77.0"
     }
   }
@@ -11,8 +11,8 @@ terraform {
 module "vpc" {
   source = "./modules/vpc"
 
-  project_id  = var.project_id
-  
+  project_id = var.project_id
+
 }
 
 module "gke" {
@@ -31,15 +31,16 @@ module "gke" {
 module "cloudsql" {
   source = "./modules/cloudsql"
 
-  region            = var.region
-  location          = var.location
-  instance_name     = var.instance_name
-  database_version  = var.database_version
-  instance_tier     = var.instance_tier
-  disk_space        = var.disk_space
-  database_name     = var.database_name
-  db_username       = var.db_username
-  db_password       = var.db_password
+  region                = var.region
+  location              = var.location
+  instance_name         = var.instance_name
+  database_version      = var.database_version
+  instance_tier         = var.instance_tier
+  disk_space            = var.disk_space
+  database_name         = var.database_name
+  project_database_name = var.project_database_name
+  db_username           = var.db_username
+  db_password           = var.db_password
 }
 
 
@@ -47,7 +48,7 @@ module "bigquery" {
   source = "./modules/bigquery"
 
   dataset_id = var.dataset_id
-  region = var.region
+  region     = var.region
 }
 
 
@@ -55,5 +56,5 @@ module "cloud-storage" {
   source = "./modules/cloud-storage"
 
   project_id = var.project_id
-  region = var.region  
+  region     = var.region
 }
