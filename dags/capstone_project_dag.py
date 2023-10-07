@@ -31,6 +31,7 @@ PROJECT_ID='sodium-mountain-396818'
 REGION='us-east1'
 
 BQ_DATATSET='deb_capstone_dw'
+FACT_SQL_URI = ""
 GCS_STAGE_BUCKET = ""
 
 CLUSTER_NAME = 'deb-capstone-cluster'
@@ -68,7 +69,7 @@ default_args = {
 }
 
 with DAG(
-    'dataproc-demo',
+    'capstone',
     default_args=default_args,
     description='capstone project to load data from csv files into datawarehouse',
     schedule_interval=None,
@@ -238,7 +239,7 @@ with DAG(
 
     create_table_fact_movie_analytics = BigQueryOperator(
         task_id="create_table_fact_movie_analytics",
-        sql="",
+        sql=f"{FACT_SQL_URI}",
         use_legacy_sql=False,
         allow_large_results=True,
         write_disposition='WRITE_TRUNCATE',
