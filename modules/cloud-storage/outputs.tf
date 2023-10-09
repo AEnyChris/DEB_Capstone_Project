@@ -32,11 +32,5 @@ output "movie_review_txfm_script_uri" {
   value = google_storage_bucket_object.movie_review_transf.self_link
 }
 
-output "create_fact_table_query_uri" {
-  value = google_storage_bucket_object.create_fact_table_query.self_link
-}
 
 
-# output "movie_review_url" {
-#   value = google_storage_bucket_object.movie_review.self_link
-# }

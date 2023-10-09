@@ -30,8 +30,17 @@ resource "google_storage_bucket_object" "movie_review_transf" {
   bucket = google_storage_bucket.scripts.name
 }
 
-resource "google_storage_bucket_object" "create_fact_table_query" {
-  name   = "create_fact_table.sql"
-  source = "./loading_data/sql_queries/create_fact_table.sql"
+
+resource "google_storage_bucket_object" "user_purchase_process" {
+  name   = "user_purchase_process.sql"
+  source = "./loading_data/pyspark_jobs/user_purchase_process.py"
+  bucket = google_storage_bucket.scripts.name
+}
+
+
+resource "google_storage_bucket_object" "sql_file" {
+  for_each = var.sql_files
+  name = each.key
+  source = each.value
   bucket = google_storage_bucket.scripts.name
 }

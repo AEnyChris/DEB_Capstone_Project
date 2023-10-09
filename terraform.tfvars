@@ -18,3 +18,32 @@ db_password           = "dbpassword"
 
 #BigQuery
 dataset_id = "deb_capstone_dw"
+
+
+# sql_script_source = [
+#      "loading_data/sql_queries/create_dim_device_table.sql" ,
+#      "loading_data/sql_queries/create_dim_location.sql",
+#      "loading_data/sql_queries/create_dim_os.sql",
+#      "loading_data/sql_queries/create_fact_table.sql",
+#      "loading_data/sql_queries/create_table_dim_date.sql",
+#      "loading_data/sql_queries/create_user_purchase_table.sql",
+#      "loading_data/sql_queries/import_user_purchase.sql"    
+#      ]
+# sql_file_names = [
+#     "create_dim_device_table.sql",
+#     "create_dim_location.sql",
+#     "create_dim_os.sql",
+#     "create_fact_table.sql",
+#     "create_table_dim_date.sql"
+# ]
+
+
+sql_files = {
+    "create_dim_device_table.sql" = "loading_data/sql_queries/create_dim_device_table.sql"
+    "create_dim_location.sql" = "loading_data/sql_queries/create_dim_location.sql"
+    "create_dim_os.sql" = "loading_data/sql_queries/create_dim_os.sql"
+    "create_fact_table.sql" = "loading_data/sql_queries/create_fact_table.sql"
+    "create_table_dim_date.sql" = "loading_data/sql_queries/create_table_dim_date.sql"
+    "create_user_purchase_table" = "loading_data/sql_queries/create_user_purchase_table.sql"
+    "import_user_purchase" = "loading_data/sql_queries/import_user_purchase.sql"
+}

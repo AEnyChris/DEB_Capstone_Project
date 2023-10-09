@@ -19,16 +19,19 @@ CTE_review AS (
 )
 
 SELECT 
-    cas.customer_id,
-    id_dim_location,
+    cmr.customer_id,
     id_dim_devices,
+    id_dim_location,
     id_dim_os,
     amount_spent,
     review_score,
     review_count,
     insert_date
-FROM CTE_amount_spent cas, dim_devices, dim_os, dim_location
-JOIN CTE_review cr ON cas.customer_id = cr.customer_id
-JOIN sodium-mountain-396818.deb_capstone_dw.classified_movie_review mr ON mr.customer_id = cas.customer_id
-
+FROM sodium-mountain-396818.deb_capstone_dw.review_logs rl
+JOIN sodium-mountain-396818.deb_capstone_dw.dim_devices ddv ON ddv.device=rl.device
+JOIN sodium-mountain-396818.deb_capstone_dw.dim_location dloc ON dloc.location=rl.location
+JOIN sodium-mountain-396818.deb_capstone_dw.dim_os dos ON dos.os=rl.os
+JOIN sodium-mountain-396818.deb_capstone_dw.classified_movie_review cmr ON cmr.review_id=rl.log_id
+JOIN CTE_review ON CTE_review.customer_id=cmr.customer_id
+JOIN CTE_amount_spent ON CTE_amount_spent.customer_id = cmr.customer_id
 

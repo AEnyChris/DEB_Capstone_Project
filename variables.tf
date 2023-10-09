@@ -64,3 +64,17 @@ variable "db_password" {
 variable "dataset_id" {
   description = "dataset name"
 }
+
+
+# variable "sql_script_source" {
+#   description = "sql queries"
+# }
+
+# variable "sql_file_names" {
+#   description = "name of files as loaded"
+# }
+
+
+variable "sql_files" {
+  description = "sql files name and source path"
+}
