@@ -6,8 +6,8 @@ import xml.etree.ElementTree as ET
 from pyspark.sql.types import StringType, StructType, StructField, IntegerType
 
 
-FILE_URI = None
-STAGE_BUCKET = None
+FILE_URI = "gs://sodium-mountain-396818-data-bucket/log_reviews.csv"
+STAGE_BUCKET = "gs://sodium-mountain-396818-stage-bucket"
 
 # Initialize spark session
 spark = SparkSession.builder.appName("log_review_transform").getOrCreate()

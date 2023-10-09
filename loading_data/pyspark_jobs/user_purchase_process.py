@@ -25,13 +25,13 @@ working_df = spark.read.csv(raw_file_path, header=True)
 
 
 #drop duplicate values
-new_df = dropped_null_df.dropDuplicates()
+drop_duplicate_df = working_df.dropDuplicates()
 
 # drop null values
-dropped_null_df = working_df.na.drop(subset=["CustomerID"])
+dropped_null_df = drop_duplicate_df.na.drop(subset=["CustomerID"])
 
 # remove negative values
-df_without_negative_values = new_df.where((F.col("Quantity")>=0) & (F.col("UnitPrice")>=0))
+df_without_negative_values = dropped_null_df.where((F.col("Quantity")>=0) & (F.col("UnitPrice")>=0))
 
 
 output_df = df_without_negative_values

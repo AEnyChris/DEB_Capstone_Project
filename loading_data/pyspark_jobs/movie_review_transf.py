@@ -20,8 +20,8 @@ from pyspark.sql.types import StringType, StructType, StructField, IntegerType, 
 
 spark = SparkSession.builder.appName("movie_review_transformation").getOrCreate()
 
-GCS_RAW_BUCKET = ""
-GCS_STAGE_BUCKET = ""
+GCS_RAW_BUCKET = "gs://sodium-mountain-396818-data-bucket/movie_review.csv"
+GCS_STAGE_BUCKET = "gs://sodium-mountain-396818-stage-bucket"
 
 # Read data
 mv_wdf = spark.read.csv(GCS_RAW_BUCKET, header=True, inferSchema=True)
