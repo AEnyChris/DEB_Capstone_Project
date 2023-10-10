@@ -340,18 +340,16 @@ with DAG(
 
     start >> create_user_purchase_table >> create_dataproc_cluster
 
-    (
-        create_dataproc_cluster 
-        >> [process_user_purchase_data, transform_log_review_data, transform_movie_review_data] 
-        >> delete_dataproc_cluster
-        >> ingest_data_from_gcs
-    )
+    create_dataproc_cluster \
+    >> [process_user_purchase_data, transform_log_review_data, transform_movie_review_data] \
+    >> delete_dataproc_cluster\
+    >> ingest_data_from_gcs
 
     ingest_data_from_gcs >> import_user_purchase_to_gcs >> [load_user_purchase_to_bq, load_log_review_to_bq, load_movie_review_to_bq]
 
-    (
-        [load_user_purchase_to_bq, load_log_review_to_bq, load_movie_review_to_bq] 
-        >> [create_table_dim_date, create_table_dim_devices, create_table_dim_location, create_table_dim_os]
-          >> create_table_fact_movie_analytics 
-          >> end
-    )
+    
+    [load_user_purchase_to_bq, load_log_review_to_bq, load_movie_review_to_bq] \
+    >> [create_table_dim_date, create_table_dim_devices, create_table_dim_location, create_table_dim_os]\
+    >> create_table_fact_movie_analytics \
+    >> end
+    
