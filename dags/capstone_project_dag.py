@@ -282,6 +282,8 @@ with DAG(
         write_disposition='WRITE_TRUNCATE'
     )
 
+    continue_process = DummyOperator(task_id="continue_process")
+
 
     ##################### CREATING DIM AND FACT TABLES IN DWH BIGQUERY ##########################
     create_table_dim_date = BigQueryOperator(
@@ -351,7 +353,7 @@ with DAG(
 
     (
         [load_user_purchase_to_bq, load_log_review_to_bq, load_movie_review_to_bq] 
-        >> create_table_dim_date >> [create_table_dim_devices, create_table_dim_location, create_table_dim_os]
+        >> continue_process >> [create_table_dim_date, create_table_dim_devices, create_table_dim_location, create_table_dim_os]
         >> create_table_fact_movie_analytics 
         >> end
     )
