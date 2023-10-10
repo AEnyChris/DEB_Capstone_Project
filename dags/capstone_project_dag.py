@@ -131,7 +131,8 @@ default_args = {
     'retry_delay': timedelta(minutes=2)   
 }
 
-DAG_ID = os.path.splitext(os.path.basename(__file__))[0]
+# DAG_ID = os.path.splitext(os.path.basename(__file__))[0]
+DAG_ID = "capstone_project_dag"
 
 #---------------------------------------------------------------------------------
 
