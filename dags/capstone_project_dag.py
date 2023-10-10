@@ -131,8 +131,7 @@ default_args = {
     'retry_delay': timedelta(minutes=2)   
 }
 
-# DAG_ID = os.path.splitext(os.path.basename(__file__))[0]
-DAG_ID = "capstone_project_dag"
+DAG_ID = os.path.splitext(os.path.basename(__file__))[0]
 
 #---------------------------------------------------------------------------------
 
@@ -340,7 +339,19 @@ with DAG(
 
 
     start >> create_user_purchase_table >> create_dataproc_cluster
-    create_dataproc_cluster >> [process_user_purchase_data, transform_log_review_data, transform_movie_review_data] >> delete_dataproc_cluster >> ingest_data_from_gcs
-    ingest_data_from_gcs >> import_user_purchase_to_gcs >> [load_user_purchase_to_bq, load_log_review_to_bq, load_movie_review_to_bq] >> [create_table_dim_date, create_table_dim_devices, create_table_dim_location, create_table_dim_os] >> create_table_fact_movie_analytics
-    create_table_fact_movie_analytics >> end
-    
+
+    (
+        create_dataproc_cluster 
+        >> [process_user_purchase_data, transform_log_review_data, transform_movie_review_data] 
+        >> delete_dataproc_cluster
+        >> ingest_data_to_user_purchase_table
+    )
+
+    ingest_data_to_user_purchase_table >> import_user_purchase_to_gcs >> [load_user_purchase_to_bq, load_log_review_to_bq, load_movie_review_to_bq]
+
+    (
+        [load_user_purchase_to_bq, load_log_review_to_bq, load_movie_review_to_bq] 
+        >> [create_table_dim_date, create_table_dim_devices, create_table_dim_location, create_table_dim_os]
+        >> create_table_fact_movie_analytics 
+        >> end
+    )
