@@ -351,7 +351,7 @@ with DAG(
 
     (
         [load_user_purchase_to_bq, load_log_review_to_bq, load_movie_review_to_bq] 
-        >> [create_table_dim_date, create_table_dim_devices, create_table_dim_location, create_table_dim_os]
+        >> create_table_dim_date >> [create_table_dim_devices, create_table_dim_location, create_table_dim_os]
         >> create_table_fact_movie_analytics 
         >> end
     )
