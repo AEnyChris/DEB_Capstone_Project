@@ -43,11 +43,11 @@ POSTGRES_CONN_ID = 'postgres_conn_id'
 # Storage and files
 GCS_DATA_BUCKET_NAME = f"{PROJECT_ID}-data-bucket"
 GCS_STAGE_BUCKET = f"gs://{PROJECT_ID}-stage-bucket"
+SCRIPTS_BUCKET_URL = f"gs://{PROJECT_ID}-scripts-bucket"
 USER_PURCHASE_FILE = "user_purchase_new.csv"
 BQ_DATATSET='deb_capstone_dw'
 
 # SQL Queries file for creating tables in BQ
-SCRIPTS_BUCKET_URL = f"gs://{PROJECT_ID}-scripts-bucket"
 FACT_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_fact_table.sql"
 DIM_DATE_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_dim_date.sql"
 DIM_DEVICE_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_dim_device.sql"
@@ -57,9 +57,9 @@ USER_PURCHASE_CREATE_URL = f"{SCRIPTS_BUCKET_URL}/create_user_purchase_table.sql
 
 # DATAPROC parameters
 CLUSTER_NAME = 'deb-capstone-cluster'
-LOG_PYSPARK_URI='gs://dataproc-airflow-example/pyspark_job.py'
-MOVIE_PYSPARK_URI='gs://dataproc-airflow-example/pyspark_job.py'
-USER_PURCHASE_PYSPARK_URI = ""
+LOG_PYSPARK_URI=f"{SCRIPTS_BUCKET_URL}/log_review_txfm_script.py"
+MOVIE_PYSPARK_URI=f"{SCRIPTS_BUCKET_URL}/movie_review_txfm_script.py"
+USER_PURCHASE_PYSPARK_URI = f"{SCRIPTS_BUCKET_URL}/user_purchase_process.py"
 
 
 CLUSTER_CONFIG = {

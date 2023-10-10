@@ -32,7 +32,7 @@ resource "google_storage_bucket_object" "movie_review_transf" {
 
 
 resource "google_storage_bucket_object" "user_purchase_process" {
-  name   = "user_purchase_process.sql"
+  name   = "user_purchase_process.py"
   source = "./loading_data/pyspark_jobs/user_purchase_process.py"
   bucket = google_storage_bucket.scripts.name
 }
