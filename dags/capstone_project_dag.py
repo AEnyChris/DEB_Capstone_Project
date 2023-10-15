@@ -57,8 +57,8 @@ USER_PURCHASE_CREATE_URL = f"{SCRIPTS_BUCKET_URL}/create_user_purchase_table.sql
 
 # DATAPROC parameters
 CLUSTER_NAME = 'deb-capstone-cluster'
-LOG_PYSPARK_URI=f"{SCRIPTS_BUCKET_URL}/log_review_txfm_script.py"
-MOVIE_PYSPARK_URI=f"{SCRIPTS_BUCKET_URL}/movie_review_txfm_script.py"
+LOG_PYSPARK_URI=f"{SCRIPTS_BUCKET_URL}/log_review_trans.py"
+MOVIE_PYSPARK_URI=f"{SCRIPTS_BUCKET_URL}/movie_review_transf.py"
 USER_PURCHASE_PYSPARK_URI = f"{SCRIPTS_BUCKET_URL}/user_purchase_process.py"
 
 
