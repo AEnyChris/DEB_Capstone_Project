@@ -143,7 +143,8 @@ with DAG(
     default_args=default_args,
     description='capstone project to load data from csv files into datawarehouse',
     schedule_interval='@daily',
-    start_date = days_ago(2)
+    start_date = days_ago(2),
+    catchup=False
 ) as dag:   
 #----------------------------------------------------------------------------------------  
 

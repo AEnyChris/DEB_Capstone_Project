@@ -42,3 +42,7 @@ output "gcs_stage_bucket_uri" {
 output "gcs_scripts_bucket_uri" {
   value = module.cloud-storage.scripts_bucket_base_url
 }
+
+output "instance_ip_address" {
+  value = module.cloudsql.instance_ip_address
+}

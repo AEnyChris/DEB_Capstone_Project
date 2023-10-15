@@ -1,3 +1,5 @@
+nslookup myip.opendns.com resolver1.opendns.com
+
 echo "### getting cluster credentials to initiate kubectl"
 gcloud container clusters get-credentials $(terraform output -raw kubernetes_cluster_name) --region $(terraform output -raw location)
 echo "### done"
@@ -8,7 +10,7 @@ kubectl -n nfs apply -f nfs/nfs-server.yaml # creates server
 $env:NFS_SERVER=$(kubectl -n nfs get service/nfs-server -o jsonpath="{.spec.clusterIP}")
 echo "--done"
 
-echo "-### reating namespace storage"
+echo "-### creating namespace storage"
 kubectl create namespace storage
 
 echo "### using helm to add nfs-subdir-external-provisioner repo"

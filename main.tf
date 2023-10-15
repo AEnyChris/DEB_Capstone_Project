@@ -57,5 +57,5 @@ module "cloud-storage" {
 
   project_id = var.project_id
   region     = var.region
-  sql_files = var.sql_files
+  sql_files  = var.sql_files
 }

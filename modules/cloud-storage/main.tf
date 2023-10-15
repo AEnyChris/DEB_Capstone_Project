@@ -19,13 +19,13 @@ resource "google_storage_bucket" "scripts" {
 
 
 resource "google_storage_bucket_object" "log_reviews_transf" {
-  name   = "log_review_txfm_script.py"
+  name   = "log_review_trans.py"
   source = "./loading_data/pyspark_jobs/log_review_trans.py"
   bucket = google_storage_bucket.scripts.name
 }
 
 resource "google_storage_bucket_object" "movie_review_transf" {
-  name   = "movie_review_txfm_script.py"
+  name   = "movie_review_transf.py"
   source = "./loading_data/pyspark_jobs/movie_review_transf.py"
   bucket = google_storage_bucket.scripts.name
 }
