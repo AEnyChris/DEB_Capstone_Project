@@ -155,7 +155,16 @@ with DAG(
     # #################### EXTRACTION ####################
     create_user_purchase_table = PostgresOperator(
         task_id = "create_user_purchase_table",
-        sql = USER_PURCHASE_CREATE_URL,
+        sql = '''CREATE TABLE IF NOT EXISTS user_purchase (
+                invoice_number varchar(10),
+                stock_code varchar(20),
+                detail varchar(1000),
+                quantity int,
+                invoice_date timestamp,
+                unit_price numeric(8,3),
+                customer_id int,
+                country varchar(20)
+                );''',
         postgres_conn_id = POSTGRES_CONN_ID,
     )
 
