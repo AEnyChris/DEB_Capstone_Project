@@ -48,12 +48,22 @@ USER_PURCHASE_FILE = "user_purchase_new.csv"
 BQ_DATATSET='deb_capstone_dw'
 
 # SQL Queries file for creating tables in BQ
-FACT_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_fact_table.sql"
-DIM_DATE_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_dim_date.sql"
-DIM_DEVICE_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_dim_device.sql"
-DIM_OS_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_dim_os.sql"
-DIM_LOCATION_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_dim_location.sql"
-USER_PURCHASE_CREATE_URL = f"{SCRIPTS_BUCKET_URL}/create_user_purchase_table.sql"
+# FACT_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_fact_table.sql"
+# DIM_DATE_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_dim_date.sql"
+# DIM_DEVICE_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_dim_device.sql"
+# DIM_OS_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_dim_os.sql"
+# DIM_LOCATION_SQL_URI = f"{SCRIPTS_BUCKET_URL}/create_dim_location.sql"
+# USER_PURCHASE_CREATE_URL = f"{SCRIPTS_BUCKET_URL}/create_user_purchase_table.sql
+
+DIM_DEVICE_SQL_URI = "sql_queries/create_dim_device_table.sql"
+DIM_LOCATION_SQL_URI = "sql_queries/create_dim_location.sql"
+DIM_OS_SQL_URI = "sql_queries/create_dim_os.sql"
+FACT_SQL_URI  = "sql_queries/create_fact_table.sql"
+DIM_DATE_SQL_URI = "sql_queries/create_table_dim_date.sql"
+USER_PURCHASE_CREATE_URL  = "sql_queries/create_user_purchase_table.sql"
+        # = "loading_data/sql_queries/import_user_purchase.sql"
+
+
 
 # DATAPROC parameters
 CLUSTER_NAME = 'deb-capstone-cluster'
@@ -155,16 +165,7 @@ with DAG(
     # #################### EXTRACTION ####################
     create_user_purchase_table = PostgresOperator(
         task_id = "create_user_purchase_table",
-        sql = '''CREATE TABLE IF NOT EXISTS user_purchase (
-                invoice_number varchar(10),
-                stock_code varchar(20),
-                detail varchar(1000),
-                quantity int,
-                invoice_date timestamp,
-                unit_price numeric(8,3),
-                customer_id int,
-                country varchar(20)
-                );''',
+        sql = USER_PURCHASE_PYSPARK_URI,
         postgres_conn_id = POSTGRES_CONN_ID,
     )
 
@@ -308,7 +309,7 @@ with DAG(
 
     create_table_dim_devices = BigQueryOperator(
         task_id="create_table_dim_devices",
-        sql=f"{DIM_DEVICE_SQL_URI}",
+        sql=DIM_DEVICE_SQL_URI,
         use_legacy_sql=False,
         allow_large_results=True,
         write_disposition='WRITE_TRUNCATE',
@@ -318,7 +319,7 @@ with DAG(
 
     create_table_dim_location = BigQueryOperator(
         task_id="create_table_dim_location",
-        sql=f"{DIM_LOCATION_SQL_URI}",
+        sql=DIM_LOCATION_SQL_URI,
         use_legacy_sql=False,
         allow_large_results=True,
         write_disposition='WRITE_TRUNCATE',
@@ -328,7 +329,7 @@ with DAG(
 
     create_table_dim_os = BigQueryOperator(
         task_id="create_table_dim_os",
-        sql=f"{DIM_OS_SQL_URI}",
+        sql=DIM_OS_SQL_URI,
         use_legacy_sql=False,
         allow_large_results=True,
         write_disposition='WRITE_TRUNCATE',
@@ -338,7 +339,7 @@ with DAG(
 
     create_table_fact_movie_analytics = BigQueryOperator(
         task_id="create_table_fact_movie_analytics",
-        sql=f"{FACT_SQL_URI}",
+        sql=FACT_SQL_URI,
         use_legacy_sql=False,
         allow_large_results=True,
         write_disposition='WRITE_TRUNCATE',

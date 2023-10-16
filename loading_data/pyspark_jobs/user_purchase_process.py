@@ -4,7 +4,7 @@
 Author: Enyone Christian Achobe
 
 Description
-    Processes the user_purchase csv fil
+    Processes the user_purchase csv file
 """
 
 
