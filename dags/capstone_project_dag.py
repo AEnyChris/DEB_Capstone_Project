@@ -165,7 +165,7 @@ with DAG(
     # #################### EXTRACTION ####################
     create_user_purchase_table = PostgresOperator(
         task_id = "create_user_purchase_table",
-        sql = USER_PURCHASE_PYSPARK_URI,
+        sql = USER_PURCHASE_CREATE_URL,
         postgres_conn_id = POSTGRES_CONN_ID,
     )
 
