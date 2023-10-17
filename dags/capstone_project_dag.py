@@ -61,7 +61,7 @@ DIM_OS_SQL_URI = "sql_queries/create_dim_os.sql"
 FACT_SQL_URI  = "sql_queries/create_fact_table.sql"
 DIM_DATE_SQL_URI = "sql_queries/create_table_dim_date.sql"
 USER_PURCHASE_CREATE_URL  = "sql_queries/create_user_purchase_table.sql"
-IMPORT_USER_PURCHASE_SQL_PATH= "loading_data/sql_queries/import_user_purchase.sql"
+IMPORT_USER_PURCHASE_SQL_PATH= "sql_queries/import_user_purchase.sql"
 
 
 
