@@ -4,7 +4,7 @@ location   = "us-east1-b"
 
 #GKE
 gke_num_nodes = 2
-machine_type  = "n1-standard-1"
+machine_type  = "n1-standard-2"
 
 #CloudSQL
 instance_name         = "data-bootcamp-1"
@@ -22,11 +22,11 @@ dataset_id = "deb_capstone_dw"
 
 
 sql_files = {
-  "create_dim_device_table.sql" = "loading_data/sql_queries/create_dim_device_table.sql"
-  "create_dim_location.sql"     = "loading_data/sql_queries/create_dim_location.sql"
-  "create_dim_os.sql"           = "loading_data/sql_queries/create_dim_os.sql"
-  "create_fact_table.sql"       = "loading_data/sql_queries/create_fact_table.sql"
-  "create_table_dim_date.sql"   = "loading_data/sql_queries/create_table_dim_date.sql"
-  "create_user_purchase_table.sql"  = "loading_data/sql_queries/create_user_purchase_table.sql"
-  "import_user_purchase.sql"        = "loading_data/sql_queries/import_user_purchase.sql"
+  "create_dim_device_table.sql"    = "loading_data/sql_queries/create_dim_device_table.sql"
+  "create_dim_location.sql"        = "loading_data/sql_queries/create_dim_location.sql"
+  "create_dim_os.sql"              = "loading_data/sql_queries/create_dim_os.sql"
+  "create_fact_table.sql"          = "loading_data/sql_queries/create_fact_table.sql"
+  "create_table_dim_date.sql"      = "loading_data/sql_queries/create_table_dim_date.sql"
+  "create_user_purchase_table.sql" = "loading_data/sql_queries/create_user_purchase_table.sql"
+  "import_user_purchase.sql"       = "loading_data/sql_queries/import_user_purchase.sql"
 }
