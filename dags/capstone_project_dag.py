@@ -152,7 +152,7 @@ with DAG(
     DAG_ID,
     default_args=default_args,
     description='capstone project to load data from csv files into datawarehouse',
-    schedule_interval='@daily',
+    schedule_interval=None,
     start_date = days_ago(2),
     catchup=False
 ) as dag:   

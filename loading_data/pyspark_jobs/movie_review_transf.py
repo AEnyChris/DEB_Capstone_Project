@@ -84,7 +84,7 @@ stop_words_removed_mv_df = remover.transform(tokenized_mv_df)
 
 
 # Run the is_positive function on the dataframe
-output_mv_df = stop_words_removed_mv_df.withColumn("is_positive", is_positive_udf(stop_words_removed_mv_df["stop_words_removed"])),
+output_mv_df = stop_words_removed_mv_df.withColumn("is_positive", is_positive_udf(stop_words_removed_mv_df["stop_words_removed"]))
 output_mv_df =  stop_words_removed_mv_df.withColumn("insert_date", F.lit(datetime.now()))
 
 
