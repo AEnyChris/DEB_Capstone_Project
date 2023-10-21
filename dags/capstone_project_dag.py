@@ -186,6 +186,7 @@ with DAG(
     import_user_purchase_to_gcs = PostgresToGCSOperator(
         task_id="import_user_purchase_to_gcs",
         sql=IMPORT_USER_PURCHASE_SQL_PATH,
+        postgres_conn_id = POSTGRES_CONN_ID
         bucket= GCS_STAGE_BUCKET,
         filename="user_purchase.csv",
         export_format='csv',
