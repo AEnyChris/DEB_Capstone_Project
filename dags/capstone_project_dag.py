@@ -42,7 +42,7 @@ POSTGRES_CONN_ID = 'postgres_conn_id'
 
 # Storage and files
 GCS_DATA_BUCKET_NAME = f"{PROJECT_ID}-data-bucket"
-GCS_STAGE_BUCKET = f"gs://{PROJECT_ID}-stage-bucket"
+GCS_STAGE_BUCKET = f"{PROJECT_ID}-stage-bucket"
 SCRIPTS_BUCKET_URL = f"gs://{PROJECT_ID}-scripts-bucket"
 USER_PURCHASE_FILE = "user_purchase_new.csv"
 BQ_DATATSET='deb_capstone_dw'
@@ -186,7 +186,7 @@ with DAG(
     import_user_purchase_to_gcs = PostgresToGCSOperator(
         task_id="import_user_purchase_to_gcs",
         sql=IMPORT_USER_PURCHASE_SQL_PATH,
-        postgres_conn_id = POSTGRES_CONN_ID,
+        postgres_conn_id = POSTGRES_CONN_ID
         bucket= GCS_STAGE_BUCKET,
         filename="user_purchase.csv",
         export_format='csv',
