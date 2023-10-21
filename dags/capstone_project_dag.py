@@ -251,7 +251,7 @@ with DAG(
     load_log_review_to_bq = GoogleCloudStorageToBigQueryOperator(
         task_id="load_log_review_to_bq",
         bucket= GCS_STAGE_BUCKET,
-        source_objects=['log_reviews.csv'],
+        source_objects=['log_review_transformed.csv'],
         destination_project_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.review_logs",
         schema_fields=[
                         {'name': 'log_id', 'type': 'INT64', 'mode': 'NULLABLE'},
@@ -270,7 +270,7 @@ with DAG(
     load_movie_review_to_bq = GoogleCloudStorageToBigQueryOperator(
         task_id="load_movie_review_to_bq",
         bucket= GCS_STAGE_BUCKET,
-        source_objects=['movie_review.csv'],
+        source_objects=['movie_review_transformed.csv'],
         destination_project_dataset_table=f"{PROJECT_ID}.{BQ_DATATSET}.classified_movie_review",
         schema_fields=[
                         {'name': 'customer_id', 'type': 'INT64', 'mode': 'NULLABLE'},

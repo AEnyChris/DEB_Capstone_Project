@@ -23,10 +23,9 @@ spark = SparkSession.builder.appName("movie_review_transformation").getOrCreate(
 GCS_RAW_BUCKET = "gs://sodium-mountain-396818-data-bucket/movie_review.csv"
 GCS_STAGE_BUCKET = "gs://sodium-mountain-396818-stage-bucket"
 
-file_path = "loading_data\data\movie_review.csv"
 # Read data
-mv_wdf = spark.read.csv(file_path, header=True, inferSchema=True)
-# mv_wdf = spark.read.csv(GCS_RAW_BUCKET, header=True, inferSchema=True)
+
+mv_wdf = spark.read.csv(GCS_RAW_BUCKET, header=True, inferSchema=True)
 
 good_words = ["fanstastic", "good", "delightful", "remarkable", "excellent", "great", "outstanding", "splendid", "enthraling"]
 punctuations = [".", ",", "?", "!", ":", ";", "-", "(", ")"]
@@ -85,7 +84,7 @@ stop_words_removed_mv_df = remover.transform(tokenized_mv_df)
 
 # Run the is_positive function on the dataframe
 output_mv_df = stop_words_removed_mv_df.withColumn("is_positive", is_positive_udf(stop_words_removed_mv_df["stop_words_removed"]))
-output_mv_df =  stop_words_removed_mv_df.withColumn("insert_date", F.lit(datetime.now()))
+output_mv_df =  output_mv_df.withColumn("insert_date", F.lit(datetime.now()))
 
 
 # Select desired columns and write to a csv file
@@ -94,5 +93,5 @@ final_mv_df = output_mv_df.select(F.col("cid").alias("customer_id"),\
                                   F.col("id_review").alias("review_id"),\
                                   F.col("insert_date"))
 
-# final_mv_df.toPandas().to_csv(GCS_STAGE_BUCKET, index=False)
-final_mv_df.toPandas().to_csv(".", index=False)
+final_mv_df.toPandas().to_csv(f"{GCS_STAGE_BUCKET}/movie_review_transformed.csv", index=False)
+# final_mv_df.toPandas().to_csv(".", index=False)
