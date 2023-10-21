@@ -1,5 +1,5 @@
 WITH cte_distinct_location AS (
-    SELECT DISTINCT location FROM review_logs
+    SELECT DISTINCT location FROM sodium-mountain-396818.deb_capstone_dw.review_logs
 )
 
 SELECT

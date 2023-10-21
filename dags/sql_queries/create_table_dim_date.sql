@@ -1,5 +1,5 @@
 WITH cte_distinct_log_date AS (
-    SELECT DISTINCT log_date FROM review_logs
+    SELECT DISTINCT log_date FROM sodium-mountain-396818.deb_capstone_dw.review_logs
 )
 
 SELECT 

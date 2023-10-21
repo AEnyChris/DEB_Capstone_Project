@@ -1,5 +1,5 @@
 WITH cte_distinct_devices AS (
-    SELECT DISTINCT device FROM review_logs
+    SELECT DISTINCT device FROM sodium-mountain-396818.deb_capstone_dw.review_logs
 )
 
 

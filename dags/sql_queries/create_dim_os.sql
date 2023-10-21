@@ -1,5 +1,5 @@
 WITH cte_distinct_os AS (
-    SELECT DISTINCT os FROM review_logs
+    SELECT DISTINCT os FROM sodium-mountain-396818.deb_capstone_dw.review_logs
 )
 
 SELECT
