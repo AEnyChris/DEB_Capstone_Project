@@ -1,0 +1,40 @@
+
+After loading the data into the database and the cloud storage
+The Airflow dag is triggered to start when a file is detected loaded
+there are three files
+user_purchase
+movie_review
+log_review
+user_purchase is to be loaded into a postgresql database as is for schema to processing is needed
+
+movie_review:
+columns:
+	cid
+	review_str
+	review_id
+
+TRANSFORMATION:
+1. movie_review file
+Processing:
+	To create a new table with the following columns:
+		customer_id
+		is_positive
+		review_id
+		insert_date
+	The transformations needed is to:
+	a interpret the review string as positive using keywords such as good, and the like:
+	b add a column insert_date
+	Transformation steps include:
+		1. Load data from storage into spark as dataframe
+		2. Tokenize the strings in the review_str column
+		3. remove stop words
+		4. check for positive words such as good and the likes and create a new csv 
+		file
+		5. insert datetime for the time of the job execution
+		
+
+
+Cloud storage buckets to create include:
+1. to store the data
+2. for the pyspark jobs scripts
+3. for the staging, the output data of the pyspark jobs configbucket

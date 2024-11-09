@@ -2,5 +2,5 @@ data/*
 _/
 terraform.tfstat*
 .terraform*
-project plan.txt
 loading_data/data/*
+.gitignore
